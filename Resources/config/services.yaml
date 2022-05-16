@@ -1,0 +1,28 @@
+parameters:
+  CustomerY: '%env(CustomerY_PRIVATE)%'
+  cert_dir: '%env(CERT_DIR)%'
+
+services:
+  single_sign_on.customer_y:
+    class: App\Bundles\SingleSignOnBundle\Implementation\CustomerY\CustomerYProvider
+    public: true
+    tags:
+      - { name: single_sign_on.provider }
+    arguments:
+      [
+        '@Doctrine\ORM\EntityManagerInterface',
+        '@parameter_bag',
+        '@App\Bundles\SingleSignOnBundle\Implementation\CustomerY\Service\AfasService'
+      ]
+
+  single_sign_on.oci:
+    class: App\Bundles\SingleSignOnBundle\Implementation\OCI\OpenCatalogProvider
+    public: true
+    tags:
+      - { name: single_sign_on.provider }
+    arguments:
+      [ '@Doctrine\ORM\EntityManagerInterface', '@parameter_bag' ]
+
+  single_sign_on.context:
+    public: true
+    alias: App\Bundles\SingleSignOnBundle\Context\SingleSignOnContext
